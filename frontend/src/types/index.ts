@@ -63,6 +63,31 @@ export interface AgentLog {
   citations?: string[];
 }
 
+export interface KnowledgeNode {
+  id: string;
+  title: string;
+  category: string;
+  summary: string;
+  links: string[];
+  tags: string[];
+  filePath: string;
+  content?: string;
+}
+
+export interface ObsidianVaultFile {
+  path: string;
+  name: string;
+  folder: string;
+  content: string;
+}
+
+export interface KnowledgeTreeData {
+  rootTopic: string;
+  overview: string;
+  nodes: KnowledgeNode[];
+  vaultFiles: ObsidianVaultFile[];
+}
+
 export interface ResearchSession {
   id: string;
   topic: string;
@@ -71,6 +96,7 @@ export interface ResearchSession {
   config: ResearchConfig;
   logs: AgentLog[];
   reportMarkdown?: string;
+  knowledgeTree?: KnowledgeTreeData;
 }
 
 export interface ModelInfo {
@@ -82,8 +108,26 @@ export interface ModelInfo {
 }
 
 export interface AppSettings {
+  // Direct API Keys & Configuration
   geminiApiKey: string;
   openaiApiKey: string;
+  anthropicApiKey?: string;
   customBaseUrl: string;
   isSimulationMode: boolean;
+
+  // Agent Model Assignment
+  agentModels: Record<string, string>;
+
+  // Research Scope & Criteria
+  defaultEffort: ResearchEffort;
+  defaultFormat: OutputFormat;
+  defaultReportLength: ReportLength;
+  defaultCitationStyle: CitationStyle;
+  defaultVerificationThreshold: 'strict' | 'standard' | 'exploratory';
+  defaultRequirements?: string;
 }
+
+
+
+
+

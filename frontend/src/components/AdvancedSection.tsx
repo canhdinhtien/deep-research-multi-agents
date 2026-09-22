@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Sliders } from 'lucide-react';
 import type { ResearchEffort, OutputFormat, ReportLength, CitationStyle } from '../types';
 import { RESEARCH_EFFORT_OPTIONS, OUTPUT_FORMAT_OPTIONS, REPORT_LENGTH_OPTIONS } from '../data/presets';
 
@@ -35,15 +35,16 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
         className="advanced-header-btn"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-        <span>Advanced settings</span>
+        {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+        <Sliders size={16} />
+        <span>Cấu hình nghiên cứu chuyên sâu & Định dạng xuất</span>
       </button>
 
       {isOpen && (
         <div className="advanced-settings-grid">
           {/* Research Effort */}
           <div className="setting-block">
-            <label className="setting-title">Research effort</label>
+            <label className="setting-title">Mức độ đào sâu (Research Depth & Effort)</label>
             <div className="effort-options-row">
               {RESEARCH_EFFORT_OPTIONS.map((opt) => (
                 <button
@@ -63,7 +64,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
           <div className="settings-two-cols">
             {/* Output Format */}
             <div className="setting-block">
-              <label className="setting-title">Output format</label>
+              <label className="setting-title">Định dạng báo cáo chính</label>
               <select
                 className="setting-select"
                 value={format}
@@ -83,7 +84,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
 
             {/* Report Length */}
             <div className="setting-block">
-              <label className="setting-title">Report length</label>
+              <label className="setting-title">Dung lượng / Độ dài tài liệu</label>
               <select
                 className="setting-select"
                 value={reportLength}
@@ -102,26 +103,26 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
           <div className="settings-two-cols">
             {/* Citation Style */}
             <div className="setting-block">
-              <label className="setting-title">Citation style</label>
+              <label className="setting-title">Quy cách trích dẫn nguồn</label>
               <select
                 className="setting-select"
                 value={citationStyle}
                 onChange={(e) => onChangeCitationStyle(e.target.value as CitationStyle)}
                 disabled={disabled}
               >
-                <option value="inline">Academic inline [1, 2]</option>
-                <option value="footnote">Footnotes</option>
-                <option value="bibliography">Annotated bibliography</option>
+                <option value="inline">Trích dẫn học thuật trong văn bản [1, 2] + Obsidian Wikilinks</option>
+                <option value="footnote">Chú thích chân trang (Footnotes)</option>
+                <option value="bibliography">Thư mục tham khảo có chú giải (Annotated bibliography)</option>
               </select>
             </div>
 
-            {/* Stopping conditions / Verification passes */}
+            {/* Verification threshold */}
             <div className="setting-block">
-              <label className="setting-title">Verification threshold</label>
+              <label className="setting-title">Ngưỡng kiểm định & Chống ảo giác (Verification)</label>
               <select className="setting-select" defaultValue="strict" disabled={disabled}>
-                <option value="strict">Strict (Require cross-validation from multiple sources)</option>
-                <option value="standard">Standard (Flag unverified claims with caveat)</option>
-                <option value="exploratory">Exploratory (Include speculative hypotheses)</option>
+                <option value="strict">Nghiêm ngặt (Bắt buộc đối soát chéo nhiều nguồn)</option>
+                <option value="standard">Tiêu chuẩn (Gắn cờ cảnh báo cho luận điểm chưa đủ chứng cứ)</option>
+                <option value="exploratory">Mở rộng (Bao gồm các giả thuyết thăm dò)</option>
               </select>
             </div>
           </div>
@@ -138,12 +139,13 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
         .advanced-header-btn {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          font-size: 13px;
-          font-weight: 500;
+          gap: 8px;
+          font-size: 15px;
+          font-weight: 600;
           color: var(--text-secondary);
-          padding: 4px 0;
+          padding: 6px 0;
           align-self: flex-start;
+          transition: color var(--transition-fast);
         }
 
         .advanced-header-btn:hover {
@@ -153,78 +155,81 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({
         .advanced-settings-grid {
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          padding: 16px;
+          gap: 22px;
+          padding: 22px;
           background-color: var(--bg-surface);
-          border: 1px solid var(--border-subtle);
-          border-radius: var(--radius-md);
+          border: 1px solid var(--border-medium);
+          border-radius: var(--radius-lg);
         }
 
         .setting-block {
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 8px;
         }
 
         .setting-title {
-          font-size: 12px;
-          font-weight: 500;
+          font-size: 14px;
+          font-weight: 600;
           color: var(--text-secondary);
         }
 
         .effort-options-row {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 8px;
+          gap: 12px;
         }
 
         .effort-pill {
           display: flex;
           flex-direction: column;
-          gap: 4px;
-          padding: 10px 12px;
+          gap: 6px;
+          padding: 14px 16px;
           background-color: var(--bg-input);
-          border: 1px solid var(--border-subtle);
+          border: 1px solid var(--border-medium);
           border-radius: var(--radius-md);
           text-align: left;
           transition: all var(--transition-fast);
         }
 
         .effort-pill:hover:not(:disabled) {
-          border-color: var(--border-medium);
+          border-color: var(--border-strong);
+          background-color: var(--bg-surface-hover);
         }
 
         .effort-pill-active {
           border-color: var(--accent);
           background-color: var(--accent-subtle);
+          box-shadow: 0 0 0 1px var(--accent);
         }
 
         .effort-pill-name {
-          font-size: 13px;
-          font-weight: 600;
+          font-size: 14.5px;
+          font-weight: 700;
           color: var(--text-primary);
         }
 
         .effort-pill-desc {
-          font-size: 11px;
+          font-size: 13px;
           color: var(--text-muted);
-          line-height: 1.35;
+          line-height: 1.45;
         }
 
         .settings-two-cols {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 16px;
+          gap: 20px;
         }
 
         .setting-select {
           width: 100%;
-          font-size: 13px;
+          font-size: 14.5px;
         }
 
         .setting-hint {
-          font-size: 11px;
+          font-size: 13px;
           color: var(--text-muted);
+          line-height: 1.4;
         }
 
         @media (max-width: 768px) {

@@ -75,49 +75,49 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
       <div className="drawer-panel" onClick={(e) => e.stopPropagation()}>
         <div className="drawer-header">
           <div className="drawer-title-group">
-            <span className="drawer-title">Configure researcher</span>
+            <span className="drawer-title">Cấu hình Tác tử AI</span>
             <span className="drawer-subtitle">{agent.role}</span>
           </div>
           <button type="button" className="btn-ghost" onClick={onClose}>
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSave} className="drawer-body">
           {/* Role */}
           <div className="form-item">
-            <label className="input-label">Role</label>
+            <label className="input-label">Tên vai trò (Role)</label>
             <input
               type="text"
               className="drawer-input"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              placeholder="e.g. Technical analyst"
+              placeholder="Ví dụ: Technical Analyst"
               required
             />
           </div>
 
           {/* Model */}
           <div className="form-item">
-            <label className="input-label">Model</label>
+            <label className="input-label">Mô hình AI (LLM)</label>
             <ModelPicker value={model} onChange={setModel} />
           </div>
 
           {/* Instructions */}
           <div className="form-item">
-            <label className="input-label">Instructions</label>
+            <label className="input-label">Chỉ thị & Hướng dẫn hành động (Prompt Instructions)</label>
             <textarea
               className="drawer-textarea"
               rows={4}
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Define specific analytical responsibilities, focus areas, and output requirements..."
+              placeholder="Mô tả cụ thể nhiệm vụ phân tích, góc nhìn chuyên môn và yêu cầu đầu ra..."
             />
           </div>
 
           {/* Capabilities */}
           <div className="form-item">
-            <label className="input-label">Capabilities</label>
+            <label className="input-label">Quyền hạn & Khả năng của Tác tử</label>
             <div className="capabilities-list">
               <label className="capability-row">
                 <input
@@ -125,7 +125,7 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
                   checked={webSearch}
                   onChange={(e) => setWebSearch(e.target.checked)}
                 />
-                <span>Web search</span>
+                <span>Tìm kiếm Web mở (Web Grounding)</span>
               </label>
 
               <label className="capability-row">
@@ -134,7 +134,7 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
                   checked={readSources}
                   onChange={(e) => setReadSources(e.target.checked)}
                 />
-                <span>Read attached sources</span>
+                <span>Đọc & Bóc tách tài liệu đính kèm (Source Ingestion)</span>
               </label>
 
               <label className="capability-row">
@@ -143,7 +143,7 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
                   checked={reviewPeers}
                   onChange={(e) => setReviewPeers(e.target.checked)}
                 />
-                <span>Review other researchers</span>
+                <span>Phản biện & Kiểm tra chéo tác tử khác (Peer Review)</span>
               </label>
 
               <label className="capability-row">
@@ -152,7 +152,7 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
                   checked={codeExecution}
                   onChange={(e) => setCodeExecution(e.target.checked)}
                 />
-                <span>Code execution</span>
+                <span>Thực thi mã tính toán / Benchmark (Code Execution)</span>
               </label>
             </div>
           </div>
@@ -164,15 +164,15 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
               className="advanced-toggle"
               onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
             >
-              {isAdvancedOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              <span>Advanced</span>
+              {isAdvancedOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              <span>Tham số Suy luận Nâng cao</span>
             </button>
 
             {isAdvancedOpen && (
               <div className="advanced-content">
                 <div className="form-item">
                   <div className="label-with-value">
-                    <label className="input-label">Temperature</label>
+                    <label className="input-label">Độ ngẫu nhiên (Temperature)</label>
                     <span className="value-label">{temperature}</span>
                   </div>
                   <input
@@ -184,31 +184,20 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
                     onChange={(e) => setTemperature(parseFloat(e.target.value))}
                     className="slider-input"
                   />
-                  <span className="field-hint">Lower values produce more deterministic, factual output.</span>
+                  <span className="field-hint">Giá trị thấp (0.1 - 0.3) giúp câu trả lời xác thực, chính xác và bám sát chứng cứ hơn.</span>
                 </div>
 
                 <div className="form-item">
-                  <label className="input-label">Reasoning effort</label>
+                  <label className="input-label">Mức độ suy luận (Reasoning Effort)</label>
                   <select
                     className="drawer-input"
                     value={reasoningEffort}
                     onChange={(e) => setReasoningEffort(e.target.value as 'low' | 'medium' | 'high')}
                   >
-                    <option value="low">Low (Fast)</option>
-                    <option value="medium">Medium (Standard)</option>
-                    <option value="high">High (Deep reasoning)</option>
+                    <option value="low">Thấp (Phản hồi nhanh)</option>
+                    <option value="medium">Trung bình (Tiêu chuẩn)</option>
+                    <option value="high">Cao (Suy luận chuỗi CoT sâu)</option>
                   </select>
-                </div>
-
-                <div className="form-item">
-                  <label className="input-label">Token limit (Optional)</label>
-                  <input
-                    type="number"
-                    className="drawer-input"
-                    placeholder="e.g. 4096 (Default)"
-                    value={maxTokens ?? ''}
-                    onChange={(e) => setMaxTokens(e.target.value ? parseInt(e.target.value, 10) : undefined)}
-                  />
                 </div>
               </div>
             )}
@@ -217,11 +206,11 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
           {/* Drawer Footer */}
           <div className="drawer-footer">
             <button type="button" className="btn-ghost" onClick={onClose}>
-              Cancel
+              Hủy
             </button>
             <button type="submit" className="btn-primary">
-              <Check size={14} />
-              <span>Save researcher</span>
+              <Check size={16} />
+              <span>Lưu tác tử</span>
             </button>
           </div>
         </form>
@@ -229,11 +218,12 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
 
       <style>{`
         .drawer-header {
-          padding: 18px 24px;
-          border-bottom: 1px solid var(--border-subtle);
+          padding: 20px 24px;
+          border-bottom: 1px solid var(--border-medium);
           display: flex;
           align-items: center;
           justify-content: space-between;
+          background-color: var(--bg-surface-subtle);
         }
 
         .drawer-title-group {
@@ -243,14 +233,15 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
         }
 
         .drawer-title {
-          font-size: 14px;
-          font-weight: 600;
+          font-size: 17px;
+          font-weight: 700;
           color: var(--text-primary);
         }
 
         .drawer-subtitle {
-          font-size: 12px;
-          color: var(--text-muted);
+          font-size: 13.5px;
+          color: var(--accent);
+          font-weight: 600;
         }
 
         .drawer-body {
@@ -259,18 +250,18 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 22px;
         }
 
         .form-item {
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 8px;
         }
 
         .input-label {
-          font-size: 12px;
-          font-weight: 500;
+          font-size: 14px;
+          font-weight: 600;
           color: var(--text-secondary);
         }
 
@@ -282,57 +273,60 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
 
         .value-label {
           font-family: var(--font-mono);
-          font-size: 11px;
-          color: var(--text-muted);
+          font-size: 13px;
+          color: var(--accent);
+          font-weight: 700;
         }
 
         .drawer-input {
           width: 100%;
-          font-size: 13px;
+          font-size: 15px;
         }
 
         .drawer-textarea {
           width: 100%;
-          font-size: 13px;
+          font-size: 14.5px;
           resize: vertical;
-          line-height: 1.5;
+          line-height: 1.55;
         }
 
         .capabilities-list {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 10px;
           padding: 6px 0;
         }
 
         .capability-row {
           display: flex;
           align-items: center;
-          gap: 9px;
-          font-size: 13px;
+          gap: 10px;
+          font-size: 14.5px;
           color: var(--text-primary);
           cursor: pointer;
         }
 
         .capability-row input {
+          width: 17px;
+          height: 17px;
           accent-color: var(--accent);
           cursor: pointer;
         }
 
         .advanced-section {
           border-top: 1px solid var(--border-subtle);
-          padding-top: 16px;
+          padding-top: 18px;
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 16px;
         }
 
         .advanced-toggle {
           display: flex;
           align-items: center;
-          gap: 6px;
-          font-size: 13px;
-          font-weight: 500;
+          gap: 8px;
+          font-size: 14px;
+          font-weight: 600;
           color: var(--text-secondary);
           align-self: flex-start;
           padding: 4px 0;
@@ -345,9 +339,9 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
         .advanced-content {
           display: flex;
           flex-direction: column;
-          gap: 16px;
-          padding-left: 12px;
-          border-left: 2px solid var(--border-subtle);
+          gap: 18px;
+          padding-left: 14px;
+          border-left: 2px solid var(--accent);
         }
 
         .slider-input {
@@ -357,8 +351,9 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
         }
 
         .field-hint {
-          font-size: 11px;
+          font-size: 13px;
           color: var(--text-muted);
+          line-height: 1.4;
         }
 
         .drawer-footer {
@@ -367,7 +362,7 @@ export const AgentDrawer: React.FC<AgentDrawerProps> = ({
           border-top: 1px solid var(--border-subtle);
           display: flex;
           justify-content: flex-end;
-          gap: 10px;
+          gap: 12px;
         }
       `}</style>
     </div>

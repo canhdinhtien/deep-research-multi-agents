@@ -1,21 +1,17 @@
 import React from 'react';
-import { History, Settings, ArrowLeft } from 'lucide-react';
+import { Settings, ArrowLeft, BrainCircuit } from 'lucide-react';
 import type { ResearchStatus } from '../types';
 
 interface HeaderProps {
   status: ResearchStatus;
-  historyCount: number;
   activeView: 'config' | 'progress' | 'report';
-  onOpenHistory: () => void;
   onOpenSettings: () => void;
   onBackToConfig: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   status,
-  historyCount,
   activeView,
-  onOpenHistory,
   onOpenSettings,
   onBackToConfig
 }) => {
@@ -32,15 +28,23 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onBackToConfig}
               title="Return to configuration"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={17} />
               <span>Back</span>
             </button>
           )}
-          <span className="brand-title">Deep Research</span>
+          <div className="brand-logo-title" onClick={onBackToConfig} style={{ cursor: 'pointer' }}>
+            <div className="brand-icon-box">
+              <BrainCircuit size={20} className="brand-icon" />
+            </div>
+            <div className="brand-text-col">
+              <span className="brand-title">Deep Research AI</span>
+              <span className="brand-badge">Multi-Agents & Obsidian</span>
+            </div>
+          </div>
           {isRunning && (
             <span className="running-indicator">
               <span className="running-dot" />
-              <span>Running</span>
+              <span>Researching...</span>
             </span>
           )}
         </div>
@@ -49,21 +53,10 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             className="btn-ghost utility-btn"
-            onClick={onOpenHistory}
-            title="Past research sessions"
-          >
-            <History size={15} />
-            <span>History</span>
-            {historyCount > 0 && <span className="quiet-counter">{historyCount}</span>}
-          </button>
-
-          <button
-            type="button"
-            className="btn-ghost utility-btn"
             onClick={onOpenSettings}
-            title="Settings and API keys"
+            title="System Settings & API Keys"
           >
-            <Settings size={15} />
+            <Settings size={17} />
             <span>Settings</span>
           </button>
         </div>
@@ -71,17 +64,18 @@ export const Header: React.FC<HeaderProps> = ({
 
       <style>{`
         .site-header {
-          border-bottom: 1px solid var(--border-subtle);
-          background-color: var(--bg-app);
+          border-bottom: 1px solid var(--border-medium);
+          background-color: var(--bg-surface);
           position: sticky;
           top: 0;
           z-index: 50;
+          backdrop-filter: blur(8px);
         }
 
         .header-inner {
-          max-width: 980px;
+          max-width: 1080px;
           margin: 0 auto;
-          padding: 12px 24px;
+          padding: 14px 24px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -90,57 +84,94 @@ export const Header: React.FC<HeaderProps> = ({
         .header-brand {
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 18px;
+        }
+
+        .brand-logo-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .brand-icon-box {
+          width: 34px;
+          height: 34px;
+          border-radius: var(--radius-md);
+          background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
+        }
+
+        .brand-icon {
+          color: #ffffff;
+        }
+
+        .brand-text-col {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
         }
 
         .brand-title {
-          font-size: 14px;
-          font-weight: 600;
+          font-size: 16px;
+          font-weight: 700;
           color: var(--text-primary);
           letter-spacing: -0.01em;
         }
 
+        .brand-badge {
+          font-size: 11px;
+          font-weight: 600;
+          color: #c084fc;
+          letter-spacing: 0.02em;
+        }
+
         .back-nav-btn {
-          padding: 4px 8px;
-          font-size: 13px;
+          padding: 6px 10px;
+          font-size: 14px;
           color: var(--text-secondary);
         }
 
         .running-indicator {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          font-size: 12px;
-          color: var(--text-muted);
-          padding-left: 8px;
-          border-left: 1px solid var(--border-medium);
+          gap: 8px;
+          font-size: 13.5px;
+          font-weight: 500;
+          color: #a5b4fc;
+          padding: 4px 12px;
+          border-radius: 20px;
+          background-color: var(--accent-subtle);
+          border: 1px solid var(--accent-border);
         }
 
         .running-dot {
-          width: 6px;
-          height: 6px;
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
           background-color: var(--accent);
+          box-shadow: 0 0 8px var(--accent);
+          animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+          0% { opacity: 0.6; transform: scale(0.9); }
+          50% { opacity: 1; transform: scale(1.2); }
+          100% { opacity: 0.6; transform: scale(0.9); }
         }
 
         .header-utilities {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 10px;
         }
 
         .utility-btn {
-          font-size: 13px;
-          padding: 5px 10px;
-        }
-
-        .quiet-counter {
-          font-size: 11px;
-          color: var(--text-muted);
-          background-color: var(--bg-surface-subtle);
-          padding: 1px 6px;
-          border-radius: 10px;
-          margin-left: 2px;
+          font-size: 14px;
+          font-weight: 500;
+          padding: 7px 12px;
         }
       `}</style>
     </header>

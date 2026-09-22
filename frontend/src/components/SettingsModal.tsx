@@ -26,6 +26,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     onSaveSettings({
+      ...settings,
       geminiApiKey: geminiKey.trim(),
       openaiApiKey: openaiKey.trim(),
       customBaseUrl: customBaseUrl.trim(),
@@ -42,9 +43,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-top">
-          <span className="modal-title">Settings</span>
+          <div className="modal-title-group">
+            <span className="modal-title">System Settings & API Keys</span>
+            <span className="modal-subtitle">Manage model connections and execution mode</span>
+          </div>
           <button type="button" className="btn-ghost" onClick={onClose}>
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
@@ -52,9 +56,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Simulation Toggle */}
           <div className="setting-row">
             <div className="setting-labels">
-              <span className="setting-name">Simulation mode</span>
+              <span className="setting-name">Simulation Mode</span>
               <span className="setting-desc">
-                Generates realistic multi-agent research traces without making live API calls.
+                Generates realistic multi-agent research traces and Obsidian vaults immediately without consuming live API tokens.
               </span>
             </div>
             <label className="toggle-switch">
@@ -69,7 +73,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Gemini API Key */}
           <div className="form-item">
-            <label className="input-label">Google Gemini API key</label>
+            <label className="input-label">Google Gemini API Key</label>
             <input
               type="password"
               placeholder="AIzaSy..."
@@ -78,13 +82,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               className="mono-input"
             />
             <span className="field-hint">
-              Used for Gemini 2.5 Pro, 2.5 Flash, and Gemini 2.0 models.
+              Used for Gemini 2.5 Pro, 2.5 Flash, and Gemini 2.0 Thinking models.
             </span>
           </div>
 
           {/* OpenAI API Key */}
           <div className="form-item">
-            <label className="input-label">OpenAI API key (Optional)</label>
+            <label className="input-label">OpenAI API Key (Optional)</label>
             <input
               type="password"
               placeholder="sk-..."
@@ -96,7 +100,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Custom Base URL */}
           <div className="form-item">
-            <label className="input-label">Custom / Local API Base URL (Optional)</label>
+            <label className="input-label">Local LLM / Custom Endpoint URL (Optional)</label>
             <input
               type="url"
               placeholder="http://localhost:11434/v1"
@@ -104,7 +108,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               onChange={(e) => setCustomBaseUrl(e.target.value)}
             />
             <span className="field-hint">
-              Point to Ollama, vLLM, or other OpenAI-compatible endpoints.
+              Connect to Ollama, vLLM, or OpenAI-compatible custom servers.
             </span>
           </div>
 
@@ -113,8 +117,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               Cancel
             </button>
             <button type="submit" className="btn-primary">
-              {saved ? <Check size={14} /> : null}
-              <span>{saved ? 'Saved' : 'Save changes'}</span>
+              {saved ? <Check size={16} /> : null}
+              <span>{saved ? 'Saved' : 'Save Settings'}</span>
             </button>
           </div>
         </form>
@@ -122,60 +126,72 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
       <style>{`
         .modal-top {
-          padding: 16px 20px;
-          border-bottom: 1px solid var(--border-subtle);
+          padding: 20px 24px;
+          border-bottom: 1px solid var(--border-medium);
           display: flex;
           align-items: center;
           justify-content: space-between;
+          background-color: var(--bg-surface-subtle);
+        }
+
+        .modal-title-group {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
         }
 
         .modal-title {
-          font-size: 14px;
-          font-weight: 600;
+          font-size: 17px;
+          font-weight: 700;
           color: var(--text-primary);
         }
 
+        .modal-subtitle {
+          font-size: 13px;
+          color: var(--text-muted);
+        }
+
         .modal-form {
-          padding: 20px;
+          padding: 24px;
           display: flex;
           flex-direction: column;
-          gap: 18px;
+          gap: 20px;
         }
 
         .setting-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 12px 14px;
+          padding: 16px 18px;
           background-color: var(--bg-surface-subtle);
-          border: 1px solid var(--border-subtle);
+          border: 1px solid var(--border-medium);
           border-radius: var(--radius-md);
-          gap: 16px;
+          gap: 20px;
         }
 
         .setting-labels {
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 4px;
         }
 
         .setting-name {
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 14.5px;
+          font-weight: 700;
           color: var(--text-primary);
         }
 
         .setting-desc {
-          font-size: 12px;
+          font-size: 13px;
           color: var(--text-muted);
-          line-height: 1.35;
+          line-height: 1.45;
         }
 
         .toggle-switch {
           position: relative;
           display: inline-block;
-          width: 34px;
-          height: 18px;
+          width: 44px;
+          height: 24px;
           flex-shrink: 0;
         }
 
@@ -191,17 +207,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           inset: 0;
           background-color: var(--bg-surface-active);
           border: 1px solid var(--border-medium);
-          border-radius: 18px;
-          transition: background-color var(--transition-fast);
+          border-radius: 24px;
+          transition: all var(--transition-fast);
         }
 
         .toggle-slider:before {
           position: absolute;
           content: "";
-          height: 12px;
-          width: 12px;
-          left: 2px;
-          bottom: 2px;
+          height: 16px;
+          width: 16px;
+          left: 3px;
+          bottom: 3px;
           background-color: var(--text-muted);
           border-radius: 50%;
           transition: transform var(--transition-fast);
@@ -214,21 +230,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         input:checked + .toggle-slider:before {
           background-color: #ffffff;
-          transform: translateX(16px);
+          transform: translateX(20px);
+        }
+
+        .form-item {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .input-label {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--text-secondary);
+        }
+
+        .field-hint {
+          font-size: 13px;
+          color: var(--text-muted);
         }
 
         .mono-input {
           font-family: var(--font-mono);
-          font-size: 12px;
+          font-size: 14px;
         }
 
         .modal-actions {
-          margin-top: 8px;
-          padding-top: 14px;
+          margin-top: 10px;
+          padding-top: 16px;
           border-top: 1px solid var(--border-subtle);
           display: flex;
           justify-content: flex-end;
-          gap: 8px;
+          gap: 10px;
         }
       `}</style>
     </div>

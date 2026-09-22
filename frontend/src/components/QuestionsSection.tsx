@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, X, ArrowUp, ArrowDown, HelpCircle } from 'lucide-react';
 
 interface QuestionsSectionProps {
   questions: string[];
@@ -45,15 +45,20 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
   return (
     <section className="questions-section">
       <div className="section-header">
-        <h2 className="section-heading">Research questions</h2>
+        <div className="section-title-wrap">
+          <h2 className="section-heading">Tiêu chí & Câu hỏi nghiên cứu</h2>
+          <span className="section-subheading">
+            Các câu hỏi trọng tâm, giả thuyết cần kiểm chứng hoặc tiêu chí đánh giá mà đội ngũ Agents sẽ đào sâu.
+          </span>
+        </div>
         <button
           type="button"
           className="btn-action-inline"
           onClick={() => setIsAdding(true)}
           disabled={disabled}
         >
-          <Plus size={14} />
-          <span>Add question</span>
+          <Plus size={16} />
+          <span>Thêm tiêu chí</span>
         </button>
       </div>
 
@@ -67,7 +72,7 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
               value={question}
               onChange={(e) => handleUpdateQuestion(idx, e.target.value)}
               disabled={disabled}
-              placeholder="Specify question or hypothesis to investigate..."
+              placeholder="Nhập câu hỏi hoặc tiêu chí chi tiết cần điều tra..."
             />
             <div className="question-row-actions">
               <button
@@ -75,27 +80,27 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
                 className="q-order-btn"
                 onClick={() => handleMove(idx, 'up')}
                 disabled={disabled || idx === 0}
-                title="Move up"
+                title="Di chuyển lên"
               >
-                <ArrowUp size={13} />
+                <ArrowUp size={15} />
               </button>
               <button
                 type="button"
                 className="q-order-btn"
                 onClick={() => handleMove(idx, 'down')}
                 disabled={disabled || idx === questions.length - 1}
-                title="Move down"
+                title="Di chuyển xuống"
               >
-                <ArrowDown size={13} />
+                <ArrowDown size={15} />
               </button>
               <button
                 type="button"
                 className="q-delete-btn"
                 onClick={() => handleDeleteQuestion(idx)}
                 disabled={disabled}
-                title="Delete question"
+                title="Xóa tiêu chí"
               >
-                <X size={14} />
+                <X size={16} />
               </button>
             </div>
           </div>
@@ -118,26 +123,37 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
                   setIsAdding(false);
                 }
               }}
-              placeholder="e.g. When does model tiering actually reduce production cost?"
+              placeholder="Ví dụ: Đánh đổi về chi phí và độ trễ khi triển khai multi-agents là gì?"
               autoFocus
               disabled={disabled}
             />
             <div className="new-q-actions">
               <button
                 type="button"
-                className="btn-secondary btn-sm"
+                className="btn-primary"
+                style={{ padding: '6px 14px', fontSize: '13.5px' }}
                 onClick={handleAddQuestion}
                 disabled={disabled || !newQuestion.trim()}
               >
-                Add
+                Thêm
               </button>
               <button
                 type="button"
-                className="btn-ghost btn-sm"
+                className="btn-ghost"
+                style={{ padding: '6px 12px', fontSize: '13.5px' }}
                 onClick={() => setIsAdding(false)}
               >
-                Cancel
+                Hủy
               </button>
+            </div>
+          </div>
+        )}
+
+        {questions.length === 0 && !isAdding && (
+          <div className="empty-questions-box" onClick={() => setIsAdding(true)}>
+            <HelpCircle size={20} className="empty-q-icon" />
+            <div className="empty-q-text">
+              <span>Chưa có câu hỏi cụ thể nào. Nhấn <strong>"+ Thêm tiêu chí"</strong> để định hướng các góc nhìn nghiên cứu.</span>
             </div>
           </div>
         )}
@@ -147,53 +163,69 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
         .questions-section {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 14px;
         }
 
         .section-header {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: space-between;
+          gap: 16px;
         }
 
-        .section-heading {
-          font-size: 15px;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .questions-list {
+        .section-title-wrap {
           display: flex;
           flex-direction: column;
           gap: 4px;
         }
 
+        .section-heading {
+          font-size: 17px;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+
+        .section-subheading {
+          font-size: 14px;
+          color: var(--text-muted);
+        }
+
+        .questions-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
         .question-row {
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 4px 8px;
+          gap: 12px;
+          padding: 8px 14px;
+          background-color: var(--bg-surface);
+          border: 1px solid var(--border-subtle);
           border-radius: var(--radius-md);
-          transition: background-color var(--transition-fast);
+          transition: all var(--transition-fast);
         }
 
         .question-row:hover {
-          background-color: var(--bg-surface);
+          border-color: var(--border-medium);
+          background-color: var(--bg-surface-hover);
         }
 
         .question-number {
-          font-size: 13px;
+          font-size: 14.5px;
           font-family: var(--font-mono);
-          color: var(--text-muted);
-          min-width: 20px;
+          font-weight: 700;
+          color: var(--accent);
+          min-width: 24px;
         }
 
         .question-input {
           flex: 1;
-          font-size: 13px;
+          font-size: 15px;
           background: transparent;
           border: 1px solid transparent;
-          padding: 6px 8px;
+          padding: 6px 10px;
           color: var(--text-primary);
           border-radius: var(--radius-sm);
         }
@@ -207,17 +239,11 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
           display: flex;
           align-items: center;
           gap: 4px;
-          opacity: 0;
-          transition: opacity var(--transition-fast);
-        }
-
-        .question-row:hover .question-row-actions {
-          opacity: 1;
         }
 
         .q-order-btn, .q-delete-btn {
           color: var(--text-muted);
-          padding: 3px;
+          padding: 5px;
           border-radius: var(--radius-sm);
           display: flex;
           align-items: center;
@@ -225,27 +251,53 @@ export const QuestionsSection: React.FC<QuestionsSectionProps> = ({
 
         .q-order-btn:hover:not(:disabled) {
           color: var(--text-primary);
-          background-color: var(--bg-surface-hover);
+          background-color: var(--bg-surface-active);
         }
 
         .q-delete-btn:hover:not(:disabled) {
           color: var(--status-danger);
-          background-color: var(--bg-surface-hover);
+          background-color: rgba(239, 68, 68, 0.15);
         }
 
         .new-question-row {
+          border-color: var(--border-focus);
           background-color: var(--bg-surface);
-          border: 1px solid var(--border-medium);
+          box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
         }
 
         .new-q-actions {
           display: flex;
+          align-items: center;
           gap: 6px;
         }
 
-        .btn-sm {
-          padding: 4px 10px;
-          font-size: 12px;
+        .empty-questions-box {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 16px 20px;
+          background-color: var(--bg-surface);
+          border: 1px dashed var(--border-medium);
+          border-radius: var(--radius-md);
+          color: var(--text-muted);
+          font-size: 14px;
+          cursor: pointer;
+          transition: all var(--transition-fast);
+        }
+
+        .empty-questions-box:hover {
+          border-color: var(--accent);
+          color: var(--text-secondary);
+          background-color: var(--accent-subtle);
+        }
+
+        .empty-q-icon {
+          color: var(--accent);
+          flex-shrink: 0;
+        }
+
+        .empty-q-text strong {
+          color: var(--accent);
         }
       `}</style>
     </section>

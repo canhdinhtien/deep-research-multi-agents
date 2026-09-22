@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, ArrowRight } from 'lucide-react';
+import { X, Trash2, ArrowRight, Clock } from 'lucide-react';
 import type { ResearchSession } from '../types';
 
 interface HistorySidebarProps {
@@ -23,15 +23,21 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
     <div className="drawer-overlay" onClick={onClose}>
       <div className="drawer-panel" onClick={(e) => e.stopPropagation()}>
         <div className="drawer-header">
-          <span className="drawer-title">Research history</span>
+          <div className="drawer-title-group">
+            <span className="drawer-title">Lịch sử nghiên cứu</span>
+            <span className="drawer-subtitle">{sessions.length} phiên đã lưu</span>
+          </div>
           <button type="button" className="btn-ghost" onClick={onClose}>
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
         <div className="history-list">
           {sessions.length === 0 ? (
-            <div className="history-empty">No previous research runs recorded yet.</div>
+            <div className="history-empty">
+              <Clock size={32} style={{ opacity: 0.5, marginBottom: '8px' }} />
+              <span>Chưa có phiên nghiên cứu nào được lưu.</span>
+            </div>
           ) : (
             sessions.map((session) => (
               <div
@@ -53,19 +59,19 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       e.stopPropagation();
                       onDeleteSession(session.id);
                     }}
-                    title="Delete session"
+                    title="Xóa phiên này"
                   >
-                    <Trash2 size={13} />
+                    <Trash2 size={15} />
                   </button>
                 </div>
 
                 <div className="history-item-meta">
                   <span>{session.createdAt}</span>
                   <span className="meta-dot">·</span>
-                  <span>{session.config.sources.length} sources</span>
+                  <span>{session.config.sources.length} tài liệu</span>
                   <span className="meta-dot">·</span>
-                  <span>{session.config.researchers.filter(r => r.enabled).length} researchers</span>
-                  <ArrowRight size={12} className="history-arrow" />
+                  <span>{session.config.researchers.filter(r => r.enabled).length} tác tử</span>
+                  <ArrowRight size={14} className="history-arrow" />
                 </div>
               </div>
             ))
@@ -74,51 +80,81 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
       </div>
 
       <style>{`
-        .history-list {
-          padding: 16px;
+        .drawer-header {
+          padding: 20px 24px;
+          border-bottom: 1px solid var(--border-medium);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background-color: var(--bg-surface-subtle);
+        }
+
+        .drawer-title-group {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 2px;
+        }
+
+        .drawer-title {
+          font-size: 17px;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+
+        .drawer-subtitle {
+          font-size: 13px;
+          color: var(--text-muted);
+        }
+
+        .history-list {
+          padding: 18px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
           overflow-y: auto;
           flex: 1;
         }
 
         .history-empty {
           color: var(--text-muted);
-          font-size: 13px;
+          font-size: 15px;
           text-align: center;
-          padding: 32px 16px;
+          padding: 48px 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         .history-item {
-          padding: 12px 14px;
+          padding: 16px 18px;
           background-color: var(--bg-surface-subtle);
-          border: 1px solid var(--border-subtle);
+          border: 1px solid var(--border-medium);
           border-radius: var(--radius-md);
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 8px;
           cursor: pointer;
           transition: all var(--transition-fast);
         }
 
         .history-item:hover {
-          border-color: var(--border-medium);
+          border-color: var(--accent);
           background-color: var(--bg-surface-hover);
+          transform: translateX(-2px);
         }
 
         .history-item-top {
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
-          gap: 10px;
+          gap: 12px;
         }
 
         .history-topic {
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 15px;
+          font-weight: 600;
           color: var(--text-primary);
-          line-height: 1.4;
+          line-height: 1.45;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
@@ -127,24 +163,26 @@ export const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         .history-delete-btn {
           color: var(--text-muted);
-          padding: 3px;
+          padding: 5px;
           border-radius: var(--radius-sm);
         }
 
         .history-delete-btn:hover {
           color: var(--status-danger);
+          background-color: rgba(239, 68, 68, 0.15);
         }
 
         .history-item-meta {
           display: flex;
           align-items: center;
-          gap: 6px;
-          font-size: 12px;
+          gap: 8px;
+          font-size: 13px;
           color: var(--text-muted);
         }
 
         .history-arrow {
           margin-left: auto;
+          color: var(--accent);
           opacity: 0;
           transition: opacity var(--transition-fast);
         }

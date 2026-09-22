@@ -45,7 +45,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({ value, onChange, disab
 
       {currentModel && (
         <div className="model-helper-meta">
-          <span className="model-tag-text">{currentModel.tag}</span>
+          <span className="model-tag-text">{currentModel.description}</span>
         </div>
       )}
 
@@ -53,40 +53,41 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({ value, onChange, disab
         .model-picker-wrap {
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 6px;
           width: 100%;
         }
 
         .model-select {
           width: 100%;
-          font-size: 13px;
+          font-size: 14.5px;
           color: var(--text-primary);
           background-color: var(--bg-input);
           border: 1px solid var(--border-medium);
-          padding: 7px 10px;
+          padding: 10px 14px;
           border-radius: var(--radius-md);
         }
 
         .model-select optgroup {
           color: var(--text-muted);
           background-color: var(--bg-surface);
-          font-weight: 600;
+          font-weight: 700;
         }
 
         .model-select option {
           color: var(--text-primary);
           background-color: var(--bg-input);
-          padding: 6px;
+          padding: 8px;
         }
 
         .model-helper-meta {
-          font-size: 12px;
+          font-size: 13px;
           color: var(--text-muted);
           padding-left: 2px;
+          line-height: 1.4;
         }
 
         .model-tag-text {
-          color: var(--text-muted);
+          color: var(--text-secondary);
         }
       `}</style>
     </div>

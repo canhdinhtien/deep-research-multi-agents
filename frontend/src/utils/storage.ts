@@ -1,13 +1,27 @@
 import type { AppSettings, ResearchSession } from '../types';
 
-const SETTINGS_KEY = 'deep_research_settings_v1';
-const SESSIONS_KEY = 'deep_research_sessions_v1';
+const SETTINGS_KEY = 'deep_research_settings_v2';
+const SESSIONS_KEY = 'deep_research_sessions_v2';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   geminiApiKey: '',
   openaiApiKey: '',
+  anthropicApiKey: '',
   customBaseUrl: '',
-  isSimulationMode: true // Enabled by default for zero-cost immediate out-of-the-box exploration!
+  isSimulationMode: true,
+  defaultEffort: 'standard',
+  defaultFormat: 'report',
+  defaultReportLength: 'standard',
+  defaultCitationStyle: 'inline',
+  defaultVerificationThreshold: 'strict',
+  defaultRequirements: '',
+  agentModels: {
+    'lead-researcher': 'gemini-2.5-pro',
+    'web-researcher': 'gemini-2.5-flash',
+    'technical-analyst': 'gemini-2.5-pro',
+    'fact-checker': 'gemini-2.0-flash-thinking-exp',
+    'obsidian-architect': 'gemini-2.5-pro'
+  }
 };
 
 export const loadSettings = (): AppSettings => {

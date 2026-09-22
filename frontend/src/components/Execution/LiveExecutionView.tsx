@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Square, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Square, ArrowRight, CheckCircle2, Clock, Activity, Sparkles, BrainCircuit } from 'lucide-react';
 import type { ResearcherRole, AgentLog, ResearchStatus, LogType } from '../../types';
 
 interface LiveExecutionViewProps {
@@ -12,11 +12,11 @@ interface LiveExecutionViewProps {
 }
 
 const STAGES: { id: ResearchStatus; label: string }[] = [
-  { id: 'planning', label: 'Planning' },
-  { id: 'gathering', label: 'Gathering sources' },
-  { id: 'analyzing', label: 'Cross-analyzing' },
-  { id: 'synthesizing', label: 'Synthesizing report' },
-  { id: 'completed', label: 'Completed' }
+  { id: 'planning', label: '1. Planning' },
+  { id: 'gathering', label: '2. Gathering Sources' },
+  { id: 'analyzing', label: '3. Deep Analysis & Scrutiny' },
+  { id: 'synthesizing', label: '4. Obsidian Knowledge Synthesis' },
+  { id: 'completed', label: '5. Completed' }
 ];
 
 export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
@@ -62,11 +62,20 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
       {/* Top Bar */}
       <div className="exec-top-bar">
         <div className="exec-meta">
+          <div className="exec-badge-row">
+            <span className="live-pulse-badge">
+              <span className="live-dot" />
+              <span>Multi-Agent Research Stream</span>
+            </span>
+          </div>
           <h1 className="exec-topic-heading">{topic}</h1>
           <div className="exec-sub-meta">
-            <span className="meta-time">{formatElapsed(elapsed)} elapsed</span>
+            <span className="meta-time">
+              <Clock size={15} />
+              <span>{formatElapsed(elapsed)} elapsed</span>
+            </span>
             <span className="meta-dot">·</span>
-            <span>{researchers.filter(r => r.enabled).length} researchers</span>
+            <span>{researchers.filter(r => r.enabled).length} agents active</span>
             <span className="meta-dot">·</span>
             <span>{logs.length} events recorded</span>
           </div>
@@ -75,13 +84,14 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
         <div className="exec-action">
           {!isCompleted ? (
             <button type="button" className="btn-secondary exec-btn" onClick={onCancel}>
-              <Square size={13} />
-              <span>Cancel run</span>
+              <Square size={15} />
+              <span>Cancel Run</span>
             </button>
           ) : (
             <button type="button" className="btn-primary exec-btn" onClick={onViewReport}>
-              <span>View research dossier</span>
-              <ArrowRight size={14} />
+              <Sparkles size={16} />
+              <span>View Knowledge Tree & Report</span>
+              <ArrowRight size={16} />
             </button>
           )}
         </div>
@@ -99,7 +109,7 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
               className={`stage-item ${isCurrent ? 'stage-current' : ''} ${isPassed ? 'stage-passed' : ''}`}
             >
               <div className="stage-marker">
-                {isPassed ? <CheckCircle2 size={12} /> : idx + 1}
+                {isPassed ? <CheckCircle2 size={15} /> : idx + 1}
               </div>
               <span className="stage-label">{stage.label}</span>
               {idx < STAGES.length - 1 && <div className="stage-connector" />}
@@ -121,8 +131,8 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
                 <span className="pill-role">{r.role}</span>
                 <span className="pill-activity">
                   {isWorking
-                    ? latestLog.content.substring(0, 48) + '...'
-                    : isCompleted ? 'Finished' : 'Waiting for handoff'}
+                    ? latestLog.content.substring(0, 56) + '...'
+                    : isCompleted ? 'Task completed' : 'Waiting for handoff'}
                 </span>
               </div>
             </div>
@@ -133,16 +143,26 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
       {/* Event Stream */}
       <div className="logs-panel">
         <div className="logs-header">
-          <span className="logs-title">Research stream</span>
+          <div className="logs-title-wrap">
+            <Activity size={16} className="logs-icon" />
+            <span className="logs-title">Live Agent Activity Stream</span>
+          </div>
           <div className="logs-filters">
-            {(['all', 'thought', 'action', 'finding', 'critique', 'synthesis'] as const).map((f) => (
+            {[
+              { id: 'all', label: 'All' },
+              { id: 'thought', label: 'Thought' },
+              { id: 'action', label: 'Action' },
+              { id: 'finding', label: 'Finding' },
+              { id: 'critique', label: 'Critique' },
+              { id: 'synthesis', label: 'Synthesis' }
+            ].map((f) => (
               <button
-                key={f}
+                key={f.id}
                 type="button"
-                className={`log-filter-btn ${filter === f ? 'filter-btn-active' : ''}`}
-                onClick={() => setFilter(f)}
+                className={`log-filter-btn ${filter === f.id ? 'filter-btn-active' : ''}`}
+                onClick={() => setFilter(f.id as any)}
               >
-                {f.charAt(0).toUpperCase() + f.slice(1)}
+                {f.label}
               </button>
             ))}
           </div>
@@ -150,7 +170,10 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
 
         <div className="logs-feed">
           {filteredLogs.length === 0 ? (
-            <div className="logs-empty">Initializing research orchestration...</div>
+            <div className="logs-empty">
+              <BrainCircuit size={28} className="empty-spinner" />
+              <span>Initializing multi-agent research stream...</span>
+            </div>
           ) : (
             filteredLogs.map((log) => (
               <div key={log.id} className="log-row">
@@ -178,9 +201,9 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
 
       <style>{`
         .execution-layout {
-          max-width: 980px;
+          max-width: 1080px;
           margin: 0 auto;
-          padding: 32px 24px 64px 24px;
+          padding: 36px 24px 80px 24px;
           display: flex;
           flex-direction: column;
           gap: 28px;
@@ -190,18 +213,44 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
-          gap: 20px;
+          gap: 24px;
         }
 
         .exec-meta {
           display: flex;
           flex-direction: column;
+          gap: 8px;
+        }
+
+        .exec-badge-row {
+          display: flex;
+          align-items: center;
+        }
+
+        .live-pulse-badge {
+          display: inline-flex;
+          align-items: center;
           gap: 6px;
+          font-size: 12.5px;
+          font-weight: 600;
+          color: var(--accent);
+          background-color: var(--accent-subtle);
+          padding: 3px 10px;
+          border-radius: 20px;
+          border: 1px solid var(--accent-border);
+        }
+
+        .live-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background-color: var(--accent);
+          box-shadow: 0 0 6px var(--accent);
         }
 
         .exec-topic-heading {
-          font-size: 20px;
-          font-weight: 600;
+          font-size: 24px;
+          font-weight: 700;
           color: var(--text-primary);
           line-height: 1.35;
         }
@@ -209,9 +258,18 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
         .exec-sub-meta {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 13px;
+          gap: 10px;
+          font-size: 14px;
           color: var(--text-muted);
+          flex-wrap: wrap;
+        }
+
+        .meta-time {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          color: var(--text-secondary);
+          font-weight: 500;
         }
 
         .meta-dot {
@@ -219,50 +277,55 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
         }
 
         .exec-btn {
-          font-size: 13px;
-          padding: 8px 14px;
+          font-size: 14.5px;
+          padding: 10px 18px;
+          flex-shrink: 0;
         }
 
         /* Timeline Stepper */
         .stages-stepper {
           display: flex;
           align-items: center;
-          padding: 12px 16px;
+          padding: 16px 20px;
           background-color: var(--bg-surface);
-          border: 1px solid var(--border-subtle);
-          border-radius: var(--radius-md);
+          border: 1px solid var(--border-medium);
+          border-radius: var(--radius-lg);
+          overflow-x: auto;
         }
 
         .stage-item {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 10px;
           color: var(--text-muted);
-          font-size: 13px;
+          font-size: 14px;
+          white-space: nowrap;
         }
 
         .stage-marker {
-          width: 18px;
-          height: 18px;
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
           background-color: var(--bg-surface-subtle);
           border: 1px solid var(--border-medium);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 10px;
+          font-size: 12px;
           font-family: var(--font-mono);
+          font-weight: 700;
         }
 
         .stage-current {
           color: var(--text-primary);
-          font-weight: 500;
+          font-weight: 700;
         }
 
         .stage-current .stage-marker {
           background-color: var(--accent);
           border-color: var(--accent);
           color: #ffffff;
+          box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
         }
 
         .stage-passed {
@@ -276,7 +339,7 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
 
         .stage-connector {
           width: 32px;
-          height: 1px;
+          height: 2px;
           background-color: var(--border-subtle);
           margin: 0 12px;
         }
@@ -284,23 +347,23 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
         /* Researchers Strip */
         .researchers-strip {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-          gap: 10px;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 12px;
         }
 
         .researcher-status-pill {
           display: flex;
           align-items: flex-start;
-          gap: 9px;
-          padding: 10px 12px;
+          gap: 10px;
+          padding: 12px 14px;
           background-color: var(--bg-surface);
-          border: 1px solid var(--border-subtle);
+          border: 1px solid var(--border-medium);
           border-radius: var(--radius-md);
         }
 
         .status-orb {
-          width: 6px;
-          height: 6px;
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
           background-color: var(--text-muted);
           margin-top: 5px;
@@ -309,24 +372,24 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
 
         .orb-busy {
           background-color: var(--accent);
-          box-shadow: 0 0 6px var(--accent);
+          box-shadow: 0 0 8px var(--accent);
         }
 
         .pill-content {
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 3px;
           min-width: 0;
         }
 
         .pill-role {
-          font-size: 12px;
-          font-weight: 600;
+          font-size: 13.5px;
+          font-weight: 700;
           color: var(--text-primary);
         }
 
         .pill-activity {
-          font-size: 11px;
+          font-size: 12.5px;
           color: var(--text-muted);
           white-space: nowrap;
           overflow: hidden;
@@ -335,75 +398,103 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
 
         /* Stream logs */
         .logs-panel {
-          border: 1px solid var(--border-subtle);
-          border-radius: var(--radius-md);
+          border: 1px solid var(--border-medium);
+          border-radius: var(--radius-lg);
           background-color: var(--bg-surface);
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
         .logs-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 10px 16px;
-          border-bottom: 1px solid var(--border-subtle);
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border-medium);
           background-color: var(--bg-surface-subtle);
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+
+        .logs-title-wrap {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .logs-icon {
+          color: var(--accent);
         }
 
         .logs-title {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--text-secondary);
+          font-size: 14.5px;
+          font-weight: 700;
+          color: var(--text-primary);
         }
 
         .logs-filters {
           display: flex;
-          gap: 4px;
+          gap: 6px;
+          flex-wrap: wrap;
         }
 
         .log-filter-btn {
-          font-size: 11px;
+          font-size: 12.5px;
+          font-weight: 500;
           color: var(--text-muted);
-          padding: 3px 8px;
+          padding: 4px 10px;
           border-radius: var(--radius-sm);
         }
 
         .log-filter-btn:hover {
           color: var(--text-primary);
+          background-color: var(--bg-surface-hover);
         }
 
         .filter-btn-active {
-          background-color: var(--bg-surface-active);
-          color: var(--text-primary);
-          font-weight: 500;
+          background-color: var(--accent);
+          color: #ffffff !important;
+          font-weight: 600;
         }
 
         .logs-feed {
-          height: 480px;
+          height: 520px;
           overflow-y: auto;
-          padding: 12px 16px;
+          padding: 18px 20px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
         }
 
         .logs-empty {
           color: var(--text-muted);
-          font-size: 13px;
+          font-size: 15px;
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
+          gap: 12px;
           height: 100%;
+        }
+
+        .empty-spinner {
+          color: var(--accent);
+          animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
 
         .log-row {
           display: flex;
           align-items: flex-start;
-          gap: 16px;
-          padding: 8px 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+          gap: 20px;
+          padding: 10px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .log-row:last-child {
@@ -411,22 +502,22 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
         }
 
         .log-left {
-          width: 140px;
+          width: 170px;
           flex-shrink: 0;
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 3px;
         }
 
         .log-role {
-          font-size: 12px;
-          font-weight: 600;
+          font-size: 13.5px;
+          font-weight: 700;
           color: var(--text-primary);
         }
 
         .log-time {
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: 12px;
           color: var(--text-muted);
         }
 
@@ -434,44 +525,48 @@ export const LiveExecutionView: React.FC<LiveExecutionViewProps> = ({
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 6px;
         }
 
         .log-type-tag {
           font-family: var(--font-mono);
-          font-size: 10px;
+          font-size: 11px;
+          font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.04em;
           color: var(--text-muted);
           align-self: flex-start;
+          padding: 2px 7px;
+          border-radius: var(--radius-sm);
+          background-color: var(--bg-surface-subtle);
         }
 
-        .tag-critique { color: var(--status-warning); }
-        .tag-finding { color: var(--status-success); }
-        .tag-thought { color: #a5b4fc; }
-        .tag-synthesis { color: #f43f5e; }
+        .tag-critique { color: #f59e0b; background-color: rgba(245, 158, 11, 0.12); }
+        .tag-finding { color: #10b981; background-color: rgba(16, 185, 129, 0.12); }
+        .tag-thought { color: #a5b4fc; background-color: rgba(165, 180, 252, 0.12); }
+        .tag-synthesis { color: #f43f5e; background-color: rgba(244, 63, 94, 0.12); }
 
         .log-text {
-          font-size: 13px;
-          line-height: 1.55;
-          color: #d1d5db;
+          font-size: 15px;
+          line-height: 1.65;
+          color: #e2e8f0;
           white-space: pre-wrap;
         }
 
         .log-citations-list {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
-          margin-top: 4px;
+          gap: 8px;
+          margin-top: 6px;
         }
 
         .citation-tag {
-          font-size: 11px;
-          color: var(--text-muted);
+          font-size: 12.5px;
+          color: var(--text-secondary);
           background-color: var(--bg-input);
-          padding: 2px 6px;
+          padding: 3px 8px;
           border-radius: var(--radius-sm);
-          border: 1px solid var(--border-subtle);
+          border: 1px solid var(--border-medium);
         }
       `}</style>
     </div>

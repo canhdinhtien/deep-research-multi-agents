@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Plus, X, Upload, FileText, Globe, Eye } from 'lucide-react';
+import { Plus, X, Upload, FileText, Globe, Eye, Link as LinkIcon } from 'lucide-react';
 import type { SourceItem, SourceType } from '../types';
 import { generateId, formatFileSize } from '../utils/storage';
 
@@ -43,7 +43,7 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
           content = '';
         }
       } else {
-        content = `[Attached document: ${file.name} — ${formatFileSize(file.size)}]`;
+        content = `[Tài liệu đính kèm: ${file.name} — Dung lượng: ${formatFileSize(file.size)}]`;
       }
 
       onAddSource({
@@ -74,13 +74,13 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
         name: displayName,
         type: 'web',
         url: formatted,
-        content: `[Source URL: ${formatted}]`,
+        content: `[Liên kết nguồn tham khảo: ${formatted}]`,
         addedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
       setUrlInput('');
       setIsUrlInputOpen(false);
     } catch {
-      alert('Please enter a valid URL.');
+      alert('Vui lòng nhập đường dẫn URL hợp lệ.');
     }
   };
 
@@ -92,8 +92,8 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
       return source.size ? `DOCX · ${formatFileSize(source.size)}` : 'DOCX';
     }
     if (source.type === 'markdown') return 'Markdown';
-    if (source.type === 'web') return 'Web';
-    return 'Text';
+    if (source.type === 'web') return 'Web URL';
+    return 'Văn bản Text';
   };
 
   const hasSources = sources.length > 0;
@@ -101,7 +101,12 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
   return (
     <section className="sources-section">
       <div className="section-header">
-        <h2 className="section-heading">Sources</h2>
+        <div className="section-title-wrap">
+          <h2 className="section-heading">Tài liệu & Nguồn dữ liệu đính kèm</h2>
+          <span className="section-subheading">
+            Tải lên tài liệu PDF, DOCX, Markdown hoặc liên kết web để các Agents đối soát dữ liệu thực tế.
+          </span>
+        </div>
         <div className="section-actions">
           <button
             type="button"
@@ -109,8 +114,8 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled}
           >
-            <Plus size={14} />
-            <span>Add files</span>
+            <Plus size={16} />
+            <span>Thêm tệp</span>
           </button>
           <button
             type="button"
@@ -118,8 +123,8 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
             onClick={() => setIsUrlInputOpen(!isUrlInputOpen)}
             disabled={disabled}
           >
-            <Plus size={14} />
-            <span>Add links</span>
+            <LinkIcon size={16} />
+            <span>Thêm liên kết URL</span>
           </button>
         </div>
       </div>
@@ -139,27 +144,27 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
         <form onSubmit={handleAddLink} className="url-inline-form">
           <input
             type="url"
-            placeholder="https://example.com/article or arxiv.org/abs/..."
+            placeholder="Nhập đường dẫn URL (ví dụ: https://example.com/paper hoặc arxiv.org/...)"
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             className="url-inline-input"
             autoFocus
             disabled={disabled}
           />
-          <button type="submit" className="btn-secondary btn-sm" disabled={disabled || !urlInput.trim()}>
-            Add
+          <button type="submit" className="btn-primary" style={{ padding: '8px 16px', fontSize: '14px' }} disabled={disabled || !urlInput.trim()}>
+            Thêm
           </button>
           <button
             type="button"
-            className="btn-ghost btn-sm"
+            className="btn-ghost"
             onClick={() => setIsUrlInputOpen(false)}
           >
-            Cancel
+            Hủy
           </button>
         </form>
       )}
 
-      {/* Sources list (compact rows) */}
+      {/* Sources list */}
       {hasSources ? (
         <div
           className={`sources-list ${isDragging ? 'sources-dragging' : ''}`}
@@ -175,7 +180,7 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
             <div key={source.id} className="source-row">
               <div className="source-main-info" onClick={() => onPreviewSource(source)}>
                 <span className="source-icon">
-                  {source.type === 'web' ? <Globe size={14} /> : <FileText size={14} />}
+                  {source.type === 'web' ? <Globe size={18} /> : <FileText size={18} />}
                 </span>
                 <span className="source-name" title={source.name}>
                   {source.name}
@@ -188,18 +193,19 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
                   type="button"
                   className="source-preview-btn"
                   onClick={() => onPreviewSource(source)}
-                  title="Preview extracted content"
+                  title="Xem trước nội dung"
                 >
-                  <Eye size={13} />
+                  <Eye size={16} />
+                  <span>Xem</span>
                 </button>
                 <button
                   type="button"
                   className="source-delete-btn"
                   onClick={() => onRemoveSource(source.id)}
                   disabled={disabled}
-                  title="Remove source"
+                  title="Xóa tài liệu"
                 >
-                  <X size={14} />
+                  <X size={16} />
                 </button>
               </div>
             </div>
@@ -217,8 +223,13 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
           }}
           onClick={() => fileInputRef.current?.click()}
         >
-          <Upload size={16} className="drop-icon" />
-          <span>Drop PDFs, DOCX, Markdown, or text files here to ground the research</span>
+          <div className="drop-icon-box">
+            <Upload size={22} className="drop-icon" />
+          </div>
+          <div className="drop-text-col">
+            <span className="drop-title">Kéo thả tệp PDF, DOCX, Markdown hoặc TXT vào đây</span>
+            <span className="drop-hint">Hoặc nhấn để chọn tài liệu từ máy tính của bạn</span>
+          </div>
         </div>
       )}
 
@@ -226,32 +237,45 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
         .sources-section {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 14px;
         }
 
         .section-header {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: space-between;
+          gap: 16px;
+        }
+
+        .section-title-wrap {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
         }
 
         .section-heading {
-          font-size: 15px;
-          font-weight: 600;
+          font-size: 17px;
+          font-weight: 700;
           color: var(--text-primary);
+        }
+
+        .section-subheading {
+          font-size: 14px;
+          color: var(--text-muted);
         }
 
         .section-actions {
           display: flex;
           align-items: center;
           gap: 10px;
+          flex-shrink: 0;
         }
 
         .url-inline-form {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 8px 12px;
+          gap: 10px;
+          padding: 10px 14px;
           background-color: var(--bg-surface);
           border: 1px solid var(--border-medium);
           border-radius: var(--radius-md);
@@ -259,33 +283,29 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
 
         .url-inline-input {
           flex: 1;
-          font-size: 13px;
-          padding: 5px 8px;
-        }
-
-        .btn-sm {
-          padding: 5px 10px;
-          font-size: 12px;
+          font-size: 14.5px;
+          padding: 8px 12px;
         }
 
         .sources-list {
           display: flex;
           flex-direction: column;
-          border: 1px solid var(--border-subtle);
-          border-radius: var(--radius-md);
+          border: 1px solid var(--border-medium);
+          border-radius: var(--radius-lg);
           overflow: hidden;
           background-color: var(--bg-surface);
         }
 
         .sources-dragging {
           border-color: var(--accent);
+          box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
         }
 
         .source-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 8px 14px;
+          padding: 12px 18px;
           border-bottom: 1px solid var(--border-subtle);
           transition: background-color var(--transition-fast);
         }
@@ -301,19 +321,20 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
         .source-main-info {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
           min-width: 0;
           cursor: pointer;
         }
 
         .source-icon {
-          color: var(--text-muted);
+          color: var(--accent);
           display: flex;
           align-items: center;
         }
 
         .source-name {
-          font-size: 13px;
+          font-size: 15px;
+          font-weight: 600;
           color: var(--text-primary);
           white-space: nowrap;
           overflow: hidden;
@@ -323,54 +344,97 @@ export const SourcesSection: React.FC<SourcesSectionProps> = ({
         .source-meta {
           display: flex;
           align-items: center;
-          gap: 12px;
-          font-size: 12px;
+          gap: 14px;
+          font-size: 13.5px;
           color: var(--text-muted);
         }
 
         .source-type-tag {
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: 12px;
+          color: var(--text-secondary);
+          background-color: var(--bg-surface-subtle);
+          padding: 3px 8px;
+          border-radius: var(--radius-sm);
+          border: 1px solid var(--border-subtle);
         }
 
-        .source-preview-btn, .source-delete-btn {
-          color: var(--text-muted);
-          display: flex;
+        .source-preview-btn {
+          display: inline-flex;
           align-items: center;
-          padding: 3px;
+          gap: 5px;
+          color: var(--text-secondary);
+          padding: 5px 8px;
+          font-size: 13px;
           border-radius: var(--radius-sm);
         }
 
         .source-preview-btn:hover {
           color: var(--text-primary);
+          background-color: var(--bg-surface-active);
+        }
+
+        .source-delete-btn {
+          color: var(--text-muted);
+          display: flex;
+          align-items: center;
+          padding: 5px;
+          border-radius: var(--radius-sm);
         }
 
         .source-delete-btn:hover {
           color: var(--status-danger);
+          background-color: rgba(239, 68, 68, 0.15);
         }
 
         .empty-sources-drop {
-          border: 1px dashed var(--border-medium);
-          border-radius: var(--radius-md);
-          padding: 20px;
+          border: 2px dashed var(--border-medium);
+          border-radius: var(--radius-lg);
+          padding: 28px 24px;
           text-align: center;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          color: var(--text-muted);
-          font-size: 13px;
+          gap: 16px;
           cursor: pointer;
           transition: all var(--transition-fast);
+          background-color: var(--bg-surface);
         }
 
         .empty-sources-drop:hover, .drop-active {
           border-color: var(--accent);
-          color: var(--text-secondary);
           background-color: var(--accent-subtle);
         }
 
+        .drop-icon-box {
+          width: 44px;
+          height: 44px;
+          border-radius: var(--radius-md);
+          background-color: var(--bg-surface-subtle);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
         .drop-icon {
+          color: var(--accent);
+        }
+
+        .drop-text-col {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 3px;
+        }
+
+        .drop-title {
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .drop-hint {
+          font-size: 13.5px;
           color: var(--text-muted);
         }
       `}</style>

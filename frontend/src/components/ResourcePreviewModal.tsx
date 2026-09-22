@@ -34,18 +34,19 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
             <span className="preview-file-sub">
               {source.type.toUpperCase()}
               {source.size ? ` · ${formatFileSize(source.size)}` : ''}
+              {source.addedAt ? ` · Added at ${source.addedAt}` : ''}
             </span>
           </div>
 
           <div className="preview-actions-row">
             {source.content && (
-              <button type="button" className="btn-secondary btn-sm" onClick={handleCopy}>
-                {copied ? <Check size={12} /> : <Copy size={12} />}
-                <span>{copied ? 'Copied' : 'Copy text'}</span>
+              <button type="button" className="btn-secondary" onClick={handleCopy}>
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                <span>{copied ? 'Copied' : 'Copy Text'}</span>
               </button>
             )}
             <button type="button" className="btn-ghost" onClick={onClose}>
-              <X size={16} />
+              <X size={18} />
             </button>
           </div>
         </div>
@@ -53,17 +54,17 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
         <div className="preview-body">
           {source.url && (
             <div className="preview-url-box">
-              <span className="preview-url-label">Source link:</span>
+              <span className="preview-url-label">Source Link:</span>
               <a href={source.url} target="_blank" rel="noreferrer" className="preview-url-link">
                 <span>{source.url}</span>
-                <ExternalLink size={12} />
+                <ExternalLink size={14} />
               </a>
             </div>
           )}
 
           <div className="preview-text-box">
             <pre className="preview-raw-text">
-              {source.content || 'No extracted text available for this item.'}
+              {source.content || 'No extracted text content available for this item.'}
             </pre>
           </div>
         </div>
@@ -71,28 +72,29 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
 
       <style>{`
         .preview-dialog {
-          max-width: 680px;
+          max-width: 780px;
         }
 
         .preview-top {
-          padding: 14px 18px;
-          border-bottom: 1px solid var(--border-subtle);
+          padding: 18px 24px;
+          border-bottom: 1px solid var(--border-medium);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 12px;
+          gap: 16px;
+          background-color: var(--bg-surface-subtle);
         }
 
         .preview-header-meta {
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 3px;
           min-width: 0;
         }
 
         .preview-file-name {
-          font-size: 14px;
-          font-weight: 600;
+          font-size: 16px;
+          font-weight: 700;
           color: var(--text-primary);
           white-space: nowrap;
           overflow: hidden;
@@ -100,7 +102,7 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
         }
 
         .preview-file-sub {
-          font-size: 11px;
+          font-size: 12.5px;
           font-family: var(--font-mono);
           color: var(--text-muted);
         }
@@ -108,14 +110,14 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
         .preview-actions-row {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 10px;
         }
 
         .preview-body {
-          padding: 18px;
+          padding: 22px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
           max-height: 70vh;
           overflow-y: auto;
         }
@@ -123,38 +125,40 @@ export const ResourcePreviewModal: React.FC<ResourcePreviewModalProps> = ({
         .preview-url-box {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 12px;
+          gap: 10px;
+          font-size: 13.5px;
           background-color: var(--bg-surface-subtle);
-          padding: 8px 12px;
-          border-radius: var(--radius-sm);
+          padding: 10px 16px;
+          border-radius: var(--radius-md);
+          border: 1px solid var(--border-subtle);
         }
 
         .preview-url-label {
           color: var(--text-muted);
+          font-weight: 600;
         }
 
         .preview-url-link {
-          color: var(--text-primary);
+          color: var(--accent);
           text-decoration: underline;
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
         }
 
         .preview-text-box {
           background-color: var(--bg-input);
-          border: 1px solid var(--border-subtle);
+          border: 1px solid var(--border-medium);
           border-radius: var(--radius-md);
-          padding: 14px;
+          padding: 18px;
           overflow-x: auto;
         }
 
         .preview-raw-text {
           font-family: var(--font-mono);
-          font-size: 12px;
-          line-height: 1.6;
-          color: #d1d5db;
+          font-size: 13.5px;
+          line-height: 1.65;
+          color: #e2e8f0;
           white-space: pre-wrap;
           word-break: break-word;
         }
